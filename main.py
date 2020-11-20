@@ -8,7 +8,7 @@ import torchvision.transforms as transforms
 
 from models.lenet import LeNet
 
-EPOCHS = 2
+EPOCHS = 5
 
 # Load data
 transform = transforms.Compose(
@@ -28,7 +28,7 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=100,
 # Define model, loss function and optimizers
 model = LeNet()
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Train
 def train():
