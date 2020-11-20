@@ -8,7 +8,8 @@ import torchvision.transforms as transforms
 
 from models.lenet import LeNet
 
-EPOCHS = 5
+EPOCHS = 10
+BATCH_SIZE = 32
 
 # Load data
 transform = transforms.Compose(
@@ -17,7 +18,7 @@ transform = transforms.Compose(
 
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
                                         download=False, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=64,
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE,
                                           shuffle=True, num_workers=2)
 
 testset = torchvision.datasets.CIFAR10(root='./data', train=False,
@@ -44,8 +45,9 @@ def train():
 
             running_loss += loss.item()
 
-        print(f'epoch [{epoch+1}/{EPOCHS}], loss: {running_loss/len(trainloader):.3f}')
-        running_loss = 0.0
+            if i % 1000 == 999:
+                print(f'epoch [{epoch+1}/{EPOCHS}, {i+1}], loss: {running_loss/len(trainloader):.3f}')
+                running_loss = 0.0
 
 # Test
 def test():
@@ -61,9 +63,18 @@ def test():
                                 for j in range(4)))
 
     with torch.no_grad():
+        test_loss = 0.0
+        total = 0
+        correct = 0
         for i, (inputs, targets) in enumerate(testloader):
             outputs = model(inputs)
             loss = criterion(outputs, targets)
+
+            test_loss += loss.item()
+            _, predicted = outputs.max(1)
+            total += targets.size(0)
+            correct += predicted.eq(targets).sum().item()
+        print(f'Loss: {test_loss/len(testloader):.3f}, Acc: {correct*100/total}% ({correct}/{total})')
 
 if __name__ == '__main__':
     train()
