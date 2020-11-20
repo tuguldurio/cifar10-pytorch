@@ -8,7 +8,7 @@ import torchvision.transforms as transforms
 
 from models.lenet import LeNet
 
-EPOCHS = 10
+EPOCHS = 2
 
 # Load data
 transform = transforms.Compose(
@@ -28,17 +28,17 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=100,
 # Define model, loss function and optimizers
 model = LeNet()
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
 # Train
 def train():
     for epoch in range(EPOCHS):
         running_loss = 0.0
-        for i, (x, y) in enumerate(trainloader):
+        for i, (inputs, targets) in enumerate(trainloader):
             optimizer.zero_grad()
 
-            pred = model(x)
-            loss = criterion(pred, y)
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
             loss.backward()
             optimizer.step()
 
@@ -59,6 +59,11 @@ def test():
 
     print('Predicted: ', ' '.join('%5s' % testset.classes[predicted[j]]
                                 for j in range(4)))
+
+    with torch.no_grad():
+        for i, (inputs, targets) in enumerate(testloader):
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
 
 if __name__ == '__main__':
     train()
