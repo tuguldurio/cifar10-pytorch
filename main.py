@@ -47,17 +47,19 @@ def train():
         print(f'epoch [{epoch+1}/{EPOCHS}], loss: {running_loss/len(trainloader):.3f}')
         running_loss = 0.0
 
+# Test
+def test():
+    dataiter = iter(testloader)
+    images, labels = dataiter.next()
 
-dataiter = iter(testloader)
-images, labels = dataiter.next()
+    print('GroundTruth: ', ' '.join('%5s' % testset.classes[labels[j]] for j in range(4)))
 
-print('GroundTruth: ', ' '.join('%5s' % testset.classes[labels[j]] for j in range(4)))
+    outputs = model(images)
+    _, predicted = torch.max(outputs, 1)
 
-outputs = model(images)
-_, predicted = torch.max(outputs, 1)
-
-print('Predicted: ', ' '.join('%5s' % testset.classes[predicted[j]]
-                              for j in range(4)))
+    print('Predicted: ', ' '.join('%5s' % testset.classes[predicted[j]]
+                                for j in range(4)))
 
 if __name__ == '__main__':
     train()
+    test()
