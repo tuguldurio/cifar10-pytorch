@@ -24,12 +24,12 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE,
 testset = torchvision.datasets.CIFAR10(root='./data', train=False,
                                        download=False, transform=transform)
 testloader = torch.utils.data.DataLoader(testset, batch_size=100,
-                                         shuffle=False, num_workers=2)
+                                         shuffle=True, num_workers=2)
 
 # Define model, loss function and optimizers
 model = LeNet()
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.01)
 
 # Train
 def train():
@@ -45,8 +45,8 @@ def train():
 
             running_loss += loss.item()
 
-            if i % 1000 == 999:
-                print(f'epoch [{epoch+1}/{EPOCHS}, {i+1}], loss: {running_loss/len(trainloader):.3f}')
+            if i % 500 == 499:
+                print(f'[{epoch+1}/{EPOCHS}, {i+1}], loss: {running_loss/len(trainloader):.3f}')
                 running_loss = 0.0
 
 # Test
@@ -54,13 +54,12 @@ def test():
     dataiter = iter(testloader)
     images, labels = dataiter.next()
 
-    print('GroundTruth: ', ' '.join('%5s' % testset.classes[labels[j]] for j in range(4)))
+    print(f'GroundTruth: {" ".join("%8s" % testset.classes[labels[j]] for j in range(5))}')
 
     outputs = model(images)
     _, predicted = torch.max(outputs, 1)
 
-    print('Predicted: ', ' '.join('%5s' % testset.classes[predicted[j]]
-                                for j in range(4)))
+    print(f'Predicted:   {" ".join("%8s" % testset.classes[predicted[j]] for j in range(5))}')
 
     with torch.no_grad():
         test_loss = 0.0
