@@ -34,7 +34,7 @@ dc = int(math.log10(len_t))+1 # digits count of len_t
 # Define model, loss function and optimizers
 model = LeNet()
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.01)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Train
 def train():
