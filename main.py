@@ -1,4 +1,5 @@
 import math
+import argparse
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -6,8 +7,11 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
+import models
 
-from models.lenet import LeNet
+parser = argparse.ArgumentParser(description='pytorch cifar10')
+parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
+args = parser.parse_args()
 
 EPOCHS = 10
 BATCH_SIZE = 32
@@ -35,9 +39,9 @@ len_t = len(trainloader) # data_size / batch_size
 dc_t = int(math.log10(len_t))+1 # digits count of len_t
 
 # Define model, loss function and optimizers
-model = LeNet()
+model = models.LeNet()
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 # Train
 def train():
@@ -59,14 +63,13 @@ def train():
 
 # Test
 def test():
+    model.eval()
     dataiter = iter(testloader)
     images, labels = dataiter.next()
 
     print(f'GroundTruth: {" ".join("%5s" % classes[labels[j]] for j in range(5))}')
-
     outputs = model(images)
     _, predicted = torch.max(outputs, 1)
-
     print(f'Predicted:   {" ".join("%5s" % classes[predicted[j]] for j in range(5))}')
 
     with torch.no_grad():
