@@ -86,6 +86,9 @@ def test():
             correct += predicted.eq(targets).sum().item()
         print(f'Loss: {test_loss/len(testloader):.3f}, Acc: {correct*100/total}% ({correct}/{total})')
 
-if __name__ == '__main__':
+def main():
     train()
     test()
+
+if __name__ == '__main__':
+    main()
