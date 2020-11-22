@@ -27,9 +27,12 @@ testset = torchvision.datasets.CIFAR10(root='./data', train=False,
 testloader = torch.utils.data.DataLoader(testset, batch_size=100,
                                          shuffle=True, num_workers=2)
 
+classes = ('plane', 'car', 'bird', 'cat',
+           'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
 # for dynamic logging
 len_t = len(trainloader) # data_size / batch_size
-dc = int(math.log10(len_t))+1 # digits count of len_t
+dc_t = int(math.log10(len_t))+1 # digits count of len_t
 
 # Define model, loss function and optimizers
 model = LeNet()
@@ -51,7 +54,7 @@ def train():
             running_loss += loss.item()
 
             if i % 500 == 499:
-                print(f'[epoch {epoch+1}/{EPOCHS}, {i+1:{dc}}/{len_t}], loss: {running_loss/len_t:.3f}')
+                print(f'[epoch {epoch+1}/{EPOCHS}, {i+1:{dc_t}}/{len_t}], loss: {running_loss/len_t:.3f}')
                 running_loss = 0.0
 
 # Test
@@ -59,12 +62,12 @@ def test():
     dataiter = iter(testloader)
     images, labels = dataiter.next()
 
-    print(f'GroundTruth: {" ".join("%10s" % testset.classes[labels[j]] for j in range(5))}')
+    print(f'GroundTruth: {" ".join("%5s" % classes[labels[j]] for j in range(5))}')
 
     outputs = model(images)
     _, predicted = torch.max(outputs, 1)
 
-    print(f'Predicted:   {" ".join("%10s" % testset.classes[predicted[j]] for j in range(5))}')
+    print(f'Predicted:   {" ".join("%5s" % classes[predicted[j]] for j in range(5))}')
 
     with torch.no_grad():
         test_loss = 0.0
