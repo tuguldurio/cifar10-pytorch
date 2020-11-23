@@ -62,7 +62,7 @@ def test(args, model, testloader, criterion):
 def main():
     parser = argparse.ArgumentParser(description='pytorch cifar10')
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
-    parser.add_argument('--batch_size', default=32, type=int, help='batch size')
+    parser.add_argument('--batch-size', default=32, type=int, help='batch size')
     parser.add_argument('--epochs', default=10, type=int, help='epochs')
     args = parser.parse_args()
     
