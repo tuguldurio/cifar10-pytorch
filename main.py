@@ -17,7 +17,7 @@ def train(args, model, trainloader, criterion, optimizer):
 
     for epoch in range(1, args.epochs+1):
         running_loss = 0.0
-        for i, (inputs, targets) in enumerate(trainloader):
+        for i, (inputs, targets) in enumerate(trainloader, 1):
             optimizer.zero_grad()
 
             outputs = model(inputs)
@@ -27,9 +27,12 @@ def train(args, model, trainloader, criterion, optimizer):
 
             running_loss += loss.item()
 
-            if i % 500 == 499:
-                print(f'[epoch {epoch}/{args.epochs}, {i+1:{dc_t}}/{len_t}], loss: {running_loss/len_t:.3f}')
+            if i % 50 == 0:
+                print('[epoch {}/{}, {:{}}/{}], loss: {:.3f}'.format(
+                    epoch, args.epochs, i, dc_t, len_t, running_loss/len_t
+                ), end='\r')
                 running_loss = 0.0
+        print()
 
 # Test
 def test(args, model, testloader, criterion):
@@ -40,10 +43,12 @@ def test(args, model, testloader, criterion):
     classes = ('plane', 'car', 'bird', 'cat',
             'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    print(f'GroundTruth: {" ".join("%5s" % classes[labels[j]] for j in range(5))}')
+    # print(f'GroundTruth: {" ".join("%5s" % classes[labels[j]] for j in range(5))}')
+    print('GroundTruth: {}'.format(" ".join("%5s" % classes[labels[j]] for j in range(5))))
     outputs = model(images)
     _, predicted = torch.max(outputs, 1)
-    print(f'Predicted:   {" ".join("%5s" % classes[predicted[j]] for j in range(5))}')
+    # print(f'Predicted:   {" ".join("%5s" % classes[predicted[j]] for j in range(5))}')
+    print('Predicted:   {}'.format(" ".join("%5s" % classes[predicted[j]] for j in range(5))))
 
     with torch.no_grad():
         test_loss = 0.0
