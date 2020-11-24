@@ -43,12 +43,10 @@ def test(args, model, testloader, criterion):
     classes = ('plane', 'car', 'bird', 'cat',
             'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
-    # print(f'GroundTruth: {" ".join("%5s" % classes[labels[j]] for j in range(5))}')
-    print('GroundTruth: {}'.format(" ".join("%5s" % classes[labels[j]] for j in range(5))))
+    print('GroundTruth: {}'.format(' '.join("%5s" % classes[labels[j]] for j in range(5))))
     outputs = model(images)
     _, predicted = torch.max(outputs, 1)
-    # print(f'Predicted:   {" ".join("%5s" % classes[predicted[j]] for j in range(5))}')
-    print('Predicted:   {}'.format(" ".join("%5s" % classes[predicted[j]] for j in range(5))))
+    print('Predicted:   {}'.format(' '.join("%5s" % classes[predicted[j]] for j in range(5))))
 
     with torch.no_grad():
         test_loss = 0.0
@@ -62,7 +60,10 @@ def test(args, model, testloader, criterion):
             _, predicted = outputs.max(1)
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
-        print(f'Loss: {test_loss/len(testloader):.3f}, Acc: {correct*100/total}% ({correct}/{total})')
+        # print(f'Loss: {test_loss/len(testloader):.3f}, Acc: {correct*100/total}% ({correct}/{total})')
+        print('Loss: {:.3f}, Acc: {}% ({}/{})'.format(
+            test_loss/len(testloader), correct*100/total, correct, total
+        ))
 
 def main():
     parser = argparse.ArgumentParser(description='pytorch cifar10')
