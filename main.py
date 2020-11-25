@@ -11,10 +11,6 @@ import models
 
 # Train
 def train(args, model, trainloader, criterion, optimizer):
-    # for dynamic logging
-    len_t = len(trainloader) # data_size / batch_size
-    dc_t = int(math.log10(len_t))+1 # digits count of len_t
-
     for epoch in range(1, args.epochs+1):
         running_loss = 0.0
         for i, (inputs, targets) in enumerate(trainloader, 1):
@@ -27,9 +23,9 @@ def train(args, model, trainloader, criterion, optimizer):
 
             running_loss += loss.item()
 
-            if i % 50 == 0:
-                print('[epoch {}/{}, {:{}}/{}], loss: {:.3f}'.format(
-                    epoch, args.epochs, i, dc_t, len_t, running_loss/len_t
+            if i %  50 == 0:
+                print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
+                    epoch, args.epochs, i*len(inputs), len(trainloader.dataset), running_loss/50
                 ), end='\r')
                 running_loss = 0.0
         print()
@@ -60,7 +56,6 @@ def test(args, model, testloader, criterion):
             _, predicted = outputs.max(1)
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
-        # print(f'Loss: {test_loss/len(testloader):.3f}, Acc: {correct*100/total}% ({correct}/{total})')
         print('Loss: {:.3f}, Acc: {}% ({}/{})'.format(
             test_loss/len(testloader), correct*100/total, correct, total
         ))
