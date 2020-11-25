@@ -21,11 +21,11 @@ def train(args, model, trainloader, criterion, optimizer):
             loss.backward()
             optimizer.step()
 
+            # print statistics
             running_loss += loss.item()
-
-            if i %  50 == 0:
+            if i % args.log_interval == 0:
                 print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
-                    epoch, args.epochs, i*len(inputs), len(trainloader.dataset), running_loss/50
+                    epoch, args.epochs, i*len(inputs), len(trainloader.dataset), running_loss/args.log_interval
                 ), end='\r')
                 running_loss = 0.0
         print()
@@ -65,6 +65,8 @@ def main():
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
     parser.add_argument('--batch-size', default=32, type=int, help='batch size')
     parser.add_argument('--epochs', default=10, type=int, help='epochs')
+    parser.add_argument('--log-interval', default=10, type=int, 
+                        help='how many batches to wait before logging training status')
     args = parser.parse_args()
     
     # Load data
