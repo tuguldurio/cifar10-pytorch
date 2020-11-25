@@ -25,7 +25,7 @@ def train(args, model, trainloader, criterion, optimizer):
             running_loss += loss.item()
             if i % args.log_interval == 0:
                 print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
-                    epoch, args.epochs, i*len(inputs), len(trainloader.dataset), running_loss/args.log_interval
+                    epoch, args.epochs, i, len(trainloader), running_loss/args.log_interval
                 ), end='\r')
                 running_loss = 0.0
         print()
