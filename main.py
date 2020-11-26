@@ -10,40 +10,34 @@ import torchvision.transforms as transforms
 import models
 
 # Train
-def train(args, model, trainloader, criterion, optimizer):
-    for epoch in range(1, args.epochs+1):
-        running_loss = 0.0
-        for i, (inputs, targets) in enumerate(trainloader, 1):
-            optimizer.zero_grad()
+def train(args, model, trainloader, criterion, optimizer, epoch):
+    epoch_loss = 0.0
+    running_loss = 0.0
 
-            outputs = model(inputs)
-            loss = criterion(outputs, targets)
-            loss.backward()
-            optimizer.step()
+    for i, (inputs, targets) in enumerate(trainloader, 1):
+        optimizer.zero_grad()
 
-            # print statistics
-            running_loss += loss.item()
-            if i % args.log_interval == 0:
-                print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
-                    epoch, args.epochs, i, len(trainloader), running_loss/args.log_interval
-                ), end='\r')
-                running_loss = 0.0
-        print()
+        outputs = model(inputs)
+        loss = criterion(outputs, targets)
+        loss.backward()
+        optimizer.step()
+
+        epoch_loss += loss.item() * inputs.size(0)
+        running_loss += loss.item()
+        
+        if i % args.log_interval == 0:
+            print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
+                epoch, args.epochs, i, len(trainloader), running_loss/args.log_interval
+            ), end='\r')
+            running_loss = 0.0
+    epoch_loss = epoch_loss / len(trainloader.dataset)
+    print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
+        epoch, args.epochs, i, len(trainloader), epoch_loss
+    ))
 
 # Test
 def test(args, model, testloader, criterion):
     model.eval()
-    dataiter = iter(testloader)
-    images, labels = dataiter.next()
-
-    classes = ('plane', 'car', 'bird', 'cat',
-            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-
-    print('GroundTruth: {}'.format(' '.join("%5s" % classes[labels[j]] for j in range(5))))
-    outputs = model(images)
-    _, predicted = torch.max(outputs, 1)
-    print('Predicted:   {}'.format(' '.join("%5s" % classes[predicted[j]] for j in range(5))))
-
     with torch.no_grad():
         test_loss = 0.0
         total = 0
@@ -56,8 +50,9 @@ def test(args, model, testloader, criterion):
             _, predicted = outputs.max(1)
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
-        print('Loss: {:.3f}, Acc: {}% ({}/{})'.format(
-            test_loss/len(testloader), correct*100/total, correct, total
+        test_loss /= len(testloader)
+        print('Test Loss: {:.3f}, Acc: {}% ({}/{})\n'.format(
+            test_loss, correct*100/total, correct, total
         ))
 
 def main():
@@ -89,8 +84,20 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
-    train(args, model, trainloader, criterion, optimizer)
+    for epoch in range(1, args.epochs+1):
+        train(args, model, trainloader, criterion, optimizer, epoch)
     test(args, model, testloader, criterion)
+
+    dataiter = iter(testloader)
+    images, labels = dataiter.next()
+
+    classes = ('plane', 'car', 'bird', 'cat',
+            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
+    print('GroundTruth: {}'.format(' '.join("%5s" % classes[labels[j]] for j in range(5))))
+    outputs = model(images)
+    _, predicted = torch.max(outputs, 1)
+    print('Predicted:   {}'.format(' '.join("%5s" % classes[predicted[j]] for j in range(5))))
 
 if __name__ == '__main__':
     main()
