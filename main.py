@@ -11,7 +11,6 @@ import models
 
 # Train
 def train(args, model, trainloader, criterion, optimizer, epoch):
-    epoch_loss = 0.0
     running_loss = 0.0
 
     for i, (inputs, targets) in enumerate(trainloader, 1):
@@ -22,18 +21,10 @@ def train(args, model, trainloader, criterion, optimizer, epoch):
         loss.backward()
         optimizer.step()
 
-        epoch_loss += loss.item() * inputs.size(0)
-        running_loss += loss.item()
+        running_loss += loss.item() * inputs.size(0)
         
-        if i % args.log_interval == 0:
-            print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
-                epoch, args.epochs, i, len(trainloader), running_loss/args.log_interval
-            ), end='\r')
-            running_loss = 0.0
-    epoch_loss = epoch_loss / len(trainloader.dataset)
-    print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
-        epoch, args.epochs, i, len(trainloader), epoch_loss
-    ))
+    epoch_loss = running_loss / len(trainloader.dataset)
+    print('[epoch {}/{}], loss: {:.3f}'.format(epoch, args.epochs, epoch_loss))
 
 # Test
 def test(args, model, testloader, criterion):
@@ -42,6 +33,7 @@ def test(args, model, testloader, criterion):
         test_loss = 0.0
         total = 0
         correct = 0
+
         for i, (inputs, targets) in enumerate(testloader):
             outputs = model(inputs)
             loss = criterion(outputs, targets)
@@ -50,6 +42,7 @@ def test(args, model, testloader, criterion):
             _, predicted = outputs.max(1)
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
+
         test_loss /= len(testloader)
         print('Test Loss: {:.3f}, Acc: {}% ({}/{})\n'.format(
             test_loss, correct*100/total, correct, total
@@ -60,8 +53,6 @@ def main():
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
     parser.add_argument('--batch-size', default=32, type=int, help='batch size')
     parser.add_argument('--epochs', default=10, type=int, help='epochs')
-    parser.add_argument('--log-interval', default=10, type=int, 
-                        help='how many batches to wait before logging training status')
     args = parser.parse_args()
     
     # Load data
