@@ -12,19 +12,22 @@ import models
 # Train
 def train(args, model, trainloader, criterion, optimizer, epoch):
     running_loss = 0.0
+    running_corrects = 0
 
     for i, (inputs, targets) in enumerate(trainloader, 1):
         optimizer.zero_grad()
 
         outputs = model(inputs)
+        _, predicted = outputs.max(1)
         loss = criterion(outputs, targets)
         loss.backward()
         optimizer.step()
 
         running_loss += loss.item() * inputs.size(0)
+        running_corrects += (predicted == targets).sum().item()
         
     epoch_loss = running_loss / len(trainloader.dataset)
-    print('[epoch {}/{}], loss: {:.3f}'.format(epoch, args.epochs, epoch_loss))
+    return epoch_loss
 
 # Test
 def test(args, model, testloader, criterion):
@@ -40,7 +43,7 @@ def test(args, model, testloader, criterion):
             test_loss += loss.item()
             _, predicted = outputs.max(1)
             total += targets.size(0)
-            correct += predicted.eq(targets).sum().item()
+            correct += (predicted == targets).sum().item()
 
         test_loss /= len(testloader)
         print('\nTest Loss: {:.3f}, Acc: {}% ({}/{})'.format(
@@ -85,8 +88,10 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
+    # epoch loop
     for epoch in range(1, args.epochs+1):
-        train(args, model, trainloader, criterion, optimizer, epoch)
+        loss = train(args, model, trainloader, criterion, optimizer, epoch)
+        print('[epoch {}/{}], loss: {:.3f}'.format(epoch, args.epochs, loss))
     test(args, model, testloader, criterion)
 
 if __name__ == '__main__':
