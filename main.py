@@ -29,11 +29,10 @@ def train(args, model, trainloader, criterion, optimizer, epoch):
 # Test
 def test(args, model, testloader, criterion):
     model.eval()
+    test_loss = 0.0
+    total = 0
+    correct = 0
     with torch.no_grad():
-        test_loss = 0.0
-        total = 0
-        correct = 0
-
         for i, (inputs, targets) in enumerate(testloader):
             outputs = model(inputs)
             loss = criterion(outputs, targets)
@@ -44,9 +43,20 @@ def test(args, model, testloader, criterion):
             correct += predicted.eq(targets).sum().item()
 
         test_loss /= len(testloader)
-        print('Test Loss: {:.3f}, Acc: {}% ({}/{})\n'.format(
+        print('\nTest Loss: {:.3f}, Acc: {}% ({}/{})'.format(
             test_loss, correct*100/total, correct, total
         ))
+
+        dataiter = iter(testloader)
+        images, labels = dataiter.next()
+
+        classes = ('plane', 'car', 'bird', 'cat',
+                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
+        print('GroundTruth: {}'.format(' '.join("%5s" % classes[labels[j]] for j in range(5))))
+        outputs = model(images)
+        _, predicted = torch.max(outputs, 1)
+        print('Predicted:   {}'.format(' '.join("%5s" % classes[predicted[j]] for j in range(5))))
 
 def main():
     parser = argparse.ArgumentParser(description='pytorch cifar10')
@@ -78,17 +88,6 @@ def main():
     for epoch in range(1, args.epochs+1):
         train(args, model, trainloader, criterion, optimizer, epoch)
     test(args, model, testloader, criterion)
-
-    dataiter = iter(testloader)
-    images, labels = dataiter.next()
-
-    classes = ('plane', 'car', 'bird', 'cat',
-            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-
-    print('GroundTruth: {}'.format(' '.join("%5s" % classes[labels[j]] for j in range(5))))
-    outputs = model(images)
-    _, predicted = torch.max(outputs, 1)
-    print('Predicted:   {}'.format(' '.join("%5s" % classes[predicted[j]] for j in range(5))))
 
 if __name__ == '__main__':
     main()
