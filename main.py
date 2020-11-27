@@ -10,11 +10,12 @@ import torchvision.transforms as transforms
 import models
 
 # Train
-def train(args, model, trainloader, criterion, optimizer, epoch):
+def train(args, model, trainloader, criterion, optimizer, epoch, device):
     running_loss = 0.0
     running_corrects = 0
 
     for i, (inputs, targets) in enumerate(trainloader, 1):
+        inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
 
         outputs = model(inputs)
@@ -30,13 +31,14 @@ def train(args, model, trainloader, criterion, optimizer, epoch):
     return epoch_loss
 
 # Test
-def test(args, model, testloader, criterion):
+def test(args, model, testloader, criterion, device):
     model.eval()
     test_loss = 0.0
     total = 0
     correct = 0
     with torch.no_grad():
         for i, (inputs, targets) in enumerate(testloader):
+            inputs, targets = inputs.to(device), targets.to(device)
             outputs = model(inputs)
             loss = criterion(outputs, targets)
 
@@ -52,6 +54,7 @@ def test(args, model, testloader, criterion):
 
         dataiter = iter(testloader)
         images, labels = dataiter.next()
+        images, labels = images.to(device), labels.to(device)
 
         classes = ('plane', 'car', 'bird', 'cat',
                 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -84,16 +87,19 @@ def main():
     testloader = torch.utils.data.DataLoader(testset, batch_size=100,
                                             shuffle=True, num_workers=2)
 
+    # cuda or cpu
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
     # Define model, loss function and optimizers
-    model = models.LeNet()
+    model = models.LeNet().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
     # epoch loop
     for epoch in range(1, args.epochs+1):
-        loss = train(args, model, trainloader, criterion, optimizer, epoch)
+        loss = train(args, model, trainloader, criterion, optimizer, epoch, device)
         print('[epoch {}/{}], loss: {:.3f}'.format(epoch, args.epochs, loss))
-    test(args, model, testloader, criterion)
+    test(args, model, testloader, criterion, device)
 
 if __name__ == '__main__':
     main()
