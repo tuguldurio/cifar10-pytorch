@@ -12,9 +12,7 @@ import models
 
 # Train
 def train(args, model, trainloader, criterion, optimizer, epoch, device):
-    start = time.time()
     epoch_loss = 0.0
-    epoch_corrects = 0
     step_loss = 0.0
 
     for i, (inputs, targets) in enumerate(trainloader, 1):
@@ -28,7 +26,6 @@ def train(args, model, trainloader, criterion, optimizer, epoch, device):
         optimizer.step()
 
         epoch_loss += loss.item() * inputs.size(0)
-        epoch_corrects += (predicted == targets).sum().item()
         step_loss += loss.item()
 
         if i % 10 == 0:
@@ -40,7 +37,7 @@ def train(args, model, trainloader, criterion, optimizer, epoch, device):
             step_loss = 0.0
         
     epoch_loss = epoch_loss / len(trainloader.dataset)
-    return epoch_loss, epoch_corrects, time.time()-start
+    return epoch_loss
 
 # Test
 def test(args, model, testloader, criterion, device):
@@ -116,7 +113,9 @@ def main():
     start = time.time()
     # epoch loop
     for epoch in range(1, args.epochs+1):
-        loss, corrects, took = train(args, model, trainloader, criterion, optimizer, epoch, device)
+        start = time.time()
+        loss = train(args, model, trainloader, criterion, optimizer, epoch, device)
+        took = time.time() - start
         print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, acc: {}, took: {:.2f}s'.format(epoch, args.epochs, loss, corrects/len(trainset), took, l=len(trainloader)))
     print('took: {:.2f}s'.format(time.time()-start))
     test(args, model, testloader, criterion, device)
