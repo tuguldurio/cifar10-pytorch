@@ -43,7 +43,6 @@ def train(args, model, trainloader, criterion, optimizer, epoch, device):
 def test(args, model, testloader, criterion, device):
     model.eval()
     test_loss = 0.0
-    total = 0
     correct = 0
     with torch.no_grad():
         for i, (inputs, targets) in enumerate(testloader):
@@ -53,13 +52,10 @@ def test(args, model, testloader, criterion, device):
 
             test_loss += loss.item()
             _, predicted = outputs.max(1)
-            total += targets.size(0)
             correct += (predicted == targets).sum().item()
 
         test_loss /= len(testloader)
-        print('\nTest Loss: {:.3f}, Acc: {}% ({}/{})'.format(
-            test_loss, correct*100/total, correct, total
-        ))
+    return test_loss, correct
 
 def main():
     parser = argparse.ArgumentParser(description='pytorch cifar10')
@@ -115,7 +111,10 @@ def main():
     print('took: {:.2f}s'.format(time.time()-start))
 
     # test
-    test(args, model, testloader, criterion, device)
+    test_loss, correct = test(args, model, testloader, criterion, device)
+    print('\nTest Loss: {:.3f}, Acc: {}% ({}/{})'.format(
+            test_loss, correct*100/len(testset), correct, len(testset)
+        ))
 
     # ground truth and prediction test
     dataiter = iter(testloader)
