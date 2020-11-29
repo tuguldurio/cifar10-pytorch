@@ -13,8 +13,9 @@ import models
 # Train
 def train(args, model, trainloader, criterion, optimizer, epoch, device):
     start = time.time()
-    running_loss = 0.0
-    running_corrects = 0
+    epoch_loss = 0.0
+    epoch_corrects = 0
+    step_loss = 0.0
 
     for i, (inputs, targets) in enumerate(trainloader, 1):
         inputs, targets = inputs.to(device), targets.to(device)
@@ -26,11 +27,20 @@ def train(args, model, trainloader, criterion, optimizer, epoch, device):
         loss.backward()
         optimizer.step()
 
-        running_loss += loss.item() * inputs.size(0)
-        running_corrects += (predicted == targets).sum().item()
+        epoch_loss += loss.item() * inputs.size(0)
+        epoch_corrects += (predicted == targets).sum().item()
+        step_loss += loss.item()
+
+        if i % 10 == 0:
+            print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
+                epoch, args.epochs,
+                i, len(trainloader),
+                step_loss / 10
+                ), end='\r')
+            step_loss = 0.0
         
-    epoch_loss = running_loss / len(trainloader.dataset)
-    return epoch_loss, time.time()-start
+    epoch_loss = epoch_loss / len(trainloader.dataset)
+    return epoch_loss, epoch_corrects, time.time()-start
 
 # Test
 def test(args, model, testloader, criterion, device):
@@ -98,16 +108,16 @@ def main():
         print('CPU')
 
     # Define model, loss function and optimizers
-    model = models.VGG('VGG19').to(device)
-    # model = models.LeNet().to(device)
+    # model = models.VGG('VGG19').to(device)
+    model = models.LeNet().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
     start = time.time()
     # epoch loop
     for epoch in range(1, args.epochs+1):
-        loss, took = train(args, model, trainloader, criterion, optimizer, epoch, device)
-        print('[epoch {}/{}], loss: {:.3f}, took: {:.2f}s'.format(epoch, args.epochs, loss, took))
+        loss, corrects, took = train(args, model, trainloader, criterion, optimizer, epoch, device)
+        print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, acc: {}, took: {:.2f}s'.format(epoch, args.epochs, loss, corrects/len(trainset), took, l=len(trainloader)))
     print('took: {:.2f}s'.format(time.time()-start))
     test(args, model, testloader, criterion, device)
 
