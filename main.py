@@ -115,8 +115,11 @@ def main():
     for epoch in range(1, args.epochs+1):
         start = time.time()
         loss = train(args, model, trainloader, criterion, optimizer, epoch, device)
-        took = time.time() - start
-        print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, took: {:.2f}s'.format(epoch, args.epochs, loss, took, l=len(trainloader)))
+        print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, took: {:.2f}s'.format(
+            epoch, args.epochs, 
+            loss, time.time()-start, 
+            l=len(trainloader)
+            ))
     print('took: {:.2f}s'.format(time.time()-start))
     test(args, model, testloader, criterion, device)
 
