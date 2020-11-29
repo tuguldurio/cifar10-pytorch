@@ -101,16 +101,21 @@ def main():
     start = time.time()
     # epoch loop
     for epoch in range(1, args.epochs+1):
-        start = time.time()
+        step_start = time.time()
         loss = train(args, model, trainloader, criterion, optimizer, epoch, device)
         print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, took: {:.2f}s'.format(
             epoch, args.epochs, 
-            loss, time.time()-start, 
+            loss, time.time()-step_start, 
             l=len(trainloader)
             ))
+
+    # entire time took to train
     print('took: {:.2f}s'.format(time.time()-start))
+
+    # test
     test(args, model, testloader, criterion, device)
 
+    # ground truth and prediction test
     dataiter = iter(testloader)
     images, labels = dataiter.next()
     images, labels = images.to(device), labels.to(device)
