@@ -98,7 +98,8 @@ def main():
         print('CPU')
 
     # Define model, loss function and optimizers
-    model = models.LeNet().to(device)
+    model = models.VGG('VGG11').to(device)
+    # model = models.LeNet().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
