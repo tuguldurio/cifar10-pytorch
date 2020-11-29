@@ -87,10 +87,10 @@ def main():
     # cuda or cpu
     if torch.cuda.is_available():
         device = torch.device('cuda:0')
-        print('GPU')
+        print('backend: GPU')
     else:   
         device = torch.device('cpu')
-        print('CPU')
+        print('backend: CPU')
 
     # Define model, loss function and optimizers
     # model = models.VGG('VGG19').to(device)
