@@ -86,9 +86,6 @@ def main():
     testloader = torch.utils.data.DataLoader(testset, batch_size=100,
                                             shuffle=True, num_workers=2)
 
-    if args.log_interval is None:
-        args.log_interval = len(trainloader)//10
-
     # cuda or cpu
     if torch.cuda.is_available():
         device = torch.device('cuda:0')
