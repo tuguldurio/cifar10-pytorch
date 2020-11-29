@@ -61,18 +61,6 @@ def test(args, model, testloader, criterion, device):
             test_loss, correct*100/total, correct, total
         ))
 
-        dataiter = iter(testloader)
-        images, labels = dataiter.next()
-        images, labels = images.to(device), labels.to(device)
-
-        classes = ('plane', 'car', 'bird', 'cat',
-                'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
-
-        print('GroundTruth: {}'.format(' '.join("%5s" % classes[labels[j]] for j in range(5))))
-        outputs = model(images)
-        _, predicted = torch.max(outputs, 1)
-        print('Predicted:   {}'.format(' '.join("%5s" % classes[predicted[j]] for j in range(5))))
-
 def main():
     parser = argparse.ArgumentParser(description='pytorch cifar10')
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
@@ -122,6 +110,18 @@ def main():
             ))
     print('took: {:.2f}s'.format(time.time()-start))
     test(args, model, testloader, criterion, device)
+
+    dataiter = iter(testloader)
+    images, labels = dataiter.next()
+    images, labels = images.to(device), labels.to(device)
+
+    classes = ('plane', 'car', 'bird', 'cat',
+            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+
+    print('GroundTruth: {}'.format(' '.join("%5s" % classes[labels[j]] for j in range(5))))
+    outputs = model(images)
+    _, predicted = torch.max(outputs, 1)
+    print('Predicted:   {}'.format(' '.join("%5s" % classes[predicted[j]] for j in range(5))))
 
 if __name__ == '__main__':
     main()
