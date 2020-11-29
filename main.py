@@ -93,12 +93,12 @@ def main():
     if torch.cuda.is_available():
         device = torch.device('cuda:0')
         print('GPU')
-    else:
+    else:   
         device = torch.device('cpu')
         print('CPU')
 
     # Define model, loss function and optimizers
-    model = models.VGG('VGG11').to(device)
+    model = models.VGG('VGG19').to(device)
     # model = models.LeNet().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
