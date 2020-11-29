@@ -28,11 +28,11 @@ def train(args, model, trainloader, criterion, optimizer, epoch, device):
         epoch_loss += loss.item() * inputs.size(0)
         step_loss += loss.item()
 
-        if i % 10 == 0:
+        if i % args.log_interval == 0:
             print('[epoch {}/{}, {}/{}], loss: {:.3f}'.format(
                 epoch, args.epochs,
                 i, len(trainloader),
-                step_loss / 10
+                step_loss / args.log_interval
                 ), end='\r')
             step_loss = 0.0
         
@@ -67,6 +67,8 @@ def main():
     parser.add_argument('--batch-size', default=32, type=int, help='batch size')
     parser.add_argument('--epochs', default=10, type=int, help='epochs')
     parser.add_argument('--download', default=False, action='store_true', help='whether download data or not')
+    parser.add_argument('--log-interval', default=None, type=int, 
+                        help='how many batches to wait before logging training status')
     args = parser.parse_args()
     
     # Load data
@@ -83,6 +85,9 @@ def main():
                                         download=args.download, transform=transform)
     testloader = torch.utils.data.DataLoader(testset, batch_size=100,
                                             shuffle=True, num_workers=2)
+
+    if args.log_interval is None:
+        args.log_interval = len(trainloader)//10
 
     # cuda or cpu
     if torch.cuda.is_available():
