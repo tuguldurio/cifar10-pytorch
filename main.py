@@ -1,3 +1,4 @@
+import time
 import math
 import argparse
 import matplotlib.pyplot as plt
@@ -11,6 +12,7 @@ import models
 
 # Train
 def train(args, model, trainloader, criterion, optimizer, epoch, device):
+    start = time.time()
     running_loss = 0.0
     running_corrects = 0
 
@@ -28,7 +30,7 @@ def train(args, model, trainloader, criterion, optimizer, epoch, device):
         running_corrects += (predicted == targets).sum().item()
         
     epoch_loss = running_loss / len(trainloader.dataset)
-    return epoch_loss
+    return epoch_loss, time.time()-start
 
 # Test
 def test(args, model, testloader, criterion, device):
@@ -100,10 +102,12 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
+    start = time.time()
     # epoch loop
     for epoch in range(1, args.epochs+1):
-        loss = train(args, model, trainloader, criterion, optimizer, epoch, device)
-        print('[epoch {}/{}], loss: {:.3f}'.format(epoch, args.epochs, loss))
+        loss, took = train(args, model, trainloader, criterion, optimizer, epoch, device)
+        print('[epoch {}/{}], loss: {:.3f}, took: {:.2f}s'.format(epoch, args.epochs, loss, took))
+    print('took: {:.2f}s'.format(time.time()-start))
     test(args, model, testloader, criterion, device)
 
 if __name__ == '__main__':
