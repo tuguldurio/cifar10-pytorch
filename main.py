@@ -92,7 +92,6 @@ def main():
 
     # Define model, loss function and optimizers
     model = models.names[args.model]().to(device)
-    print(model)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
