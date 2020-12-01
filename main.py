@@ -53,12 +53,12 @@ def test(args, model, testloader, criterion, device):
             test_loss += loss.item()
             _, predicted = outputs.max(1)
             correct += (predicted == targets).sum().item()
-
         test_loss /= len(testloader)
     return test_loss, correct
 
 def main():
     parser = argparse.ArgumentParser(description='pytorch cifar10')
+    parser.add_argument('--model', default='lenet', type=str, choices=models.names.keys(), help='name of the model')
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
     parser.add_argument('--batch-size', default=32, type=int, help='batch size')
     parser.add_argument('--epochs', default=10, type=int, help='epochs')
@@ -91,8 +91,8 @@ def main():
         print('backend: CPU')
 
     # Define model, loss function and optimizers
-    # model = models.VGG('VGG19').to(device)
-    model = models.LeNet().to(device)
+    model = models.names[args.model]().to(device)
+    print(model)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
