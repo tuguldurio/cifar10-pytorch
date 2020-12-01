@@ -1,4 +1,5 @@
 # cifar10-pytorch
+cifar10 implementation with pytorch
 
 ## Usage
 ```
