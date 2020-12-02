@@ -8,12 +8,13 @@ git clone https://github.com/tuguldurio/cifar10-pytorch.git
 cd cifar10-pytorch
 ```
 
-Train network
+Training network example:
 ```
-python main.py [--model]
+python main.py -m lenet -epochs 5 --download
 ```
-optional arguments:
+arguments:
 ```
+--model, -m         default=lenet   training model name
 --lr                default=1e-3    learning rate
 --epoch             default=10      number of epochs to train
 --batch-size        default=64      batch size
