@@ -62,7 +62,7 @@ def main():
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
     parser.add_argument('--batch-size', default=64, type=int, help='batch size')
     parser.add_argument('--epochs', default=10, type=int, help='epochs')
-    parser.add_argument('--download', default=False, action='store_true', help='whether download data or not')
+    parser.add_argument('--download', default=False, action='store_true', help='to download data')
     parser.add_argument('--log-interval', default=10, type=int, 
                         help='how many batches to wait before logging training status')
     args = parser.parse_args()
