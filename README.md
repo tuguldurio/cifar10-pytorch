@@ -14,7 +14,7 @@ python main.py -m lenet -epochs 5 --download
 ```
 arguments:
 ```
---model, -m         default=lenet   training model name
+--model, -m         required        training model name
 --lr                default=1e-3    learning rate
 --epoch             default=10      number of epochs to train
 --batch-size        default=64      batch size
