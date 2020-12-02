@@ -17,7 +17,8 @@ optional arguments:
 --lr                default=1e-3    learning rate
 --epoch             default=10      number of epochs to train
 --batch-size        default=64      batch size
---download          default=False    download data
+--log-interval      default=10      batches to wait before logging
+--download          default=False   to download data
 ```
 
 ## License
