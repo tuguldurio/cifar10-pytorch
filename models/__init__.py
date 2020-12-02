@@ -1,5 +1,6 @@
 from .lenet import LeNet
 from .vgg import VGG
+from .alexnet import AlexNet
 
 class VGG11(VGG):
     def __init__(self):
