@@ -24,4 +24,5 @@ names = {
     'vgg13': VGG13,
     'vgg16': VGG16,
     'vgg19': VGG19,
+    'alexnet': AlexNet
 }
