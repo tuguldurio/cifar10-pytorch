@@ -12,6 +12,7 @@ import models
 
 # Train
 def train(args, model, trainloader, criterion, optimizer, epoch, device):
+    model.train()
     epoch_loss = 0.0
     step_loss = 0.0
 
@@ -100,9 +101,11 @@ def main():
     for epoch in range(1, args.epochs+1):
         step_start = time.time()
         loss = train(args, model, trainloader, criterion, optimizer, epoch, device)
-        print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, took: {:.2f}s'.format(
-            epoch, args.epochs, 
-            loss, time.time()-step_start, 
+        test_loss, correct = test(args, model, testloader, criterion, device)
+        print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, test_acc: {}, took: {:.2f}s'.format(
+            epoch, args.epochs,
+            loss, correct*100/len(testset),
+            time.time()-step_start,
             l=len(trainloader)
             ))
 
