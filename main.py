@@ -44,7 +44,7 @@ def train(args, model, trainloader, criterion, optimizer, epoch, device):
 def test(args, model, testloader, criterion, device):
     model.eval()
     test_loss = 0.0
-    correct = 0
+    corrects = 0
     with torch.no_grad():
         for i, (inputs, targets) in enumerate(testloader):
             inputs, targets = inputs.to(device), targets.to(device)
@@ -53,9 +53,9 @@ def test(args, model, testloader, criterion, device):
 
             test_loss += loss.item()
             _, predicted = outputs.max(1)
-            correct += (predicted == targets).sum().item()
+            corrects += (predicted == targets).sum().item()
         test_loss /= len(testloader)
-    return test_loss, correct
+    return test_loss, corrects
 
 def main():
     parser = argparse.ArgumentParser(description='pytorch cifar10')
@@ -101,10 +101,10 @@ def main():
     for epoch in range(1, args.epochs+1):
         step_start = time.time()
         loss = train(args, model, trainloader, criterion, optimizer, epoch, device)
-        test_loss, correct = test(args, model, testloader, criterion, device)
+        test_loss, corrects = test(args, model, testloader, criterion, device)
         print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, test_acc: {}, took: {:.2f}s'.format(
             epoch, args.epochs,
-            loss, correct*100/len(testset),
+            loss, corrects*100/len(testset),
             time.time()-step_start,
             l=len(trainloader)
             ))
@@ -113,9 +113,9 @@ def main():
     print('took: {:.2f}s'.format(time.time()-start))
 
     # test
-    test_loss, correct = test(args, model, testloader, criterion, device)
+    test_loss, corrects = test(args, model, testloader, criterion, device)
     print('\nTest Loss: {:.3f}, Acc: {}% ({}/{})'.format(
-            test_loss, correct*100/len(testset), correct, len(testset)
+            test_loss, corrects*100/len(testset), corrects, len(testset)
         ))
 
     # ground truth and prediction test
