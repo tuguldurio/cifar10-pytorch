@@ -102,7 +102,7 @@ def main():
         step_start = time.time()
         loss = train(args, model, trainloader, criterion, optimizer, epoch, device)
         test_loss, corrects = test(args, model, testloader, criterion, device)
-        print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, test_acc: {}, took: {:.2f}s'.format(
+        print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, test_acc: {}%, took: {:.2f}s'.format(
             epoch, args.epochs,
             loss, corrects*100/len(testset),
             time.time()-step_start,
