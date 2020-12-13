@@ -60,14 +60,14 @@ def main():
     parser = argparse.ArgumentParser(description='pytorch cifar10')
     parser.add_argument('-m', '--model', type=str, choices=models.names.keys(), required=True, help='name of the model')
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
-    parser.add_argument('--batch-size', default=64, type=int, help='batch size')
+    parser.add_argument('--batch-size', default=32, type=int, help='batch size')
     parser.add_argument('--epochs', default=10, type=int, help='epochs')
     parser.add_argument('--log-interval', default=10, type=int, 
                         help='how many batches to wait before logging training status')
     args = parser.parse_args()
     
     # Load data
-    train_loader, test_loader = utils.load_data(args)
+    trainloader, testloader = utils.load_data(args)
 
     # cuda or cpu
     if torch.cuda.is_available():
