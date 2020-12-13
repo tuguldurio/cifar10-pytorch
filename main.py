@@ -70,12 +70,7 @@ def main():
     trainloader, testloader = utils.load_data(args)
 
     # cuda or cpu
-    if torch.cuda.is_available():
-        device = torch.device('cuda:0')
-        print('backend: GPU')
-    else:   
-        device = torch.device('cpu')
-        print('backend: CPU')
+    device = utils.get_device()
 
     # Define model, loss function and optimizers
     model = models.names[args.model]().to(device)
@@ -90,7 +85,7 @@ def main():
         test_loss, corrects = test(args, model, testloader, criterion, device)
         print('[epoch {}/{}, {l}/{l}], loss: {:.3f}, test_acc: {}%, took: {:.2f}s'.format(
             epoch, args.epochs,
-            loss, corrects*100/len(testset),
+            loss, corrects*100/len(testloader.dataset),
             time.time()-step_start,
             l=len(trainloader)
             ))
@@ -101,7 +96,7 @@ def main():
     # test
     test_loss, corrects = test(args, model, testloader, criterion, device)
     print('\nTest Loss: {:.3f}, Acc: {}% ({}/{})'.format(
-            test_loss, corrects*100/len(testset), corrects, len(testset)
+            test_loss, corrects*100/len(testloader.dataset), corrects, len(testloader.dataset)
         ))
 
     # ground truth and prediction test

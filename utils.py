@@ -1,3 +1,4 @@
+import torch
 from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10
 import torchvision.transforms as transforms
@@ -16,3 +17,12 @@ def load_data(args):
     testloader = DataLoader(testset, batch_size=100, shuffle=True, num_workers=2)
 
     return trainloader, testloader
+
+def get_device():
+    if torch.cuda.is_available():
+        device = torch.device('cuda:0')
+        print('backend: GPU')
+    else:   
+        device = torch.device('cpu')
+        print('backend: CPU')
+    return device
