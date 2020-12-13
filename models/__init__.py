@@ -38,10 +38,6 @@ class DenseNet161(DenseNet):
     def __init__(self):
         super().__init__(Bottleneck, [6, 12, 36, 24], growth_rate=48)
 
-class DenseNet121(DenseNet):
-    def __init__(self):
-        super().__init__(Bottleneck, [6, 12, 24, 16], growth_rate=12)
-
 names = {
     'lenet': LeNet,
     'vgg11': VGG11,
@@ -50,4 +46,7 @@ names = {
     'vgg19': VGG19,
     'alexnet': AlexNet,
     'densenet121': DenseNet121,
+    'densenet121': DenseNet169,
+    'densenet121': DenseNet201,
+    'densenet121': DenseNet161,
 }
