@@ -65,12 +65,12 @@ def main():
     parser.add_argument('--log-interval', default=10, type=int, 
                         help='how many batches to wait before logging training status')
     args = parser.parse_args()
-    
-    # Load data
-    trainloader, testloader = utils.load_data(args)
 
     # cuda or cpu
     device = utils.get_device()
+
+    # Load data
+    trainloader, testloader = utils.load_data(args)
 
     # Define model, loss function and optimizers
     model = models.names[args.model]().to(device)

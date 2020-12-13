@@ -2,6 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10
 import torchvision.transforms as transforms
+import torch.backends.cudnn as cudnn
 
 def load_data(args):
     transform = transforms.Compose(
@@ -21,6 +22,7 @@ def load_data(args):
 def get_device():
     if torch.cuda.is_available():
         device = torch.device('cuda:0')
+        cudnn.benchmark = True
         print('backend: GPU')
     else:   
         device = torch.device('cpu')
