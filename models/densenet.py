@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 class Bottleneck(nn.Module):
     def __init__(self, in_planes, growth_rate):
         super().__init__()
@@ -19,7 +18,6 @@ class Bottleneck(nn.Module):
         x = torch.cat([x,x_], 1)
         return x
 
-
 class Transition(nn.Module):
     def __init__(self, in_planes, out_planes):
         super().__init__()
@@ -30,7 +28,6 @@ class Transition(nn.Module):
         x = self.conv(F.relu(self.bn(x)))
         x = F.avg_pool2d(x, 2)
         return x
-
 
 class DenseNet(nn.Module):
     def __init__(self, block, nblocks, growth_rate=12, reduction=0.5, num_classes=10):
