@@ -12,11 +12,10 @@ class Bottleneck(nn.Module):
         self.conv2 = nn.Conv2d(4*growth_rate, growth_rate, kernel_size=3, padding=1, bias=False)
 
     def forward(self, x):
-        x_ = x
-        x = self.conv1(F.relu(self.bn1(x)))
-        x = self.conv2(F.relu(self.bn2(x)))
-        x = torch.cat([x,x_], 1)
-        return x
+        x_ = self.conv1(F.relu(self.bn1(x)))
+        x_ = self.conv2(F.relu(self.bn2(x_)))
+        x_ = torch.cat([x_,x], 1)
+        return x_
 
 class Transition(nn.Module):
     def __init__(self, in_planes, out_planes):
