@@ -46,7 +46,7 @@ names = {
     'vgg19': VGG19,
     'alexnet': AlexNet,
     'densenet121': DenseNet121,
-    'densenet121': DenseNet169,
-    'densenet121': DenseNet201,
-    'densenet121': DenseNet161,
+    'densenet169': DenseNet169,
+    'densenet201': DenseNet201,
+    'densenet161': DenseNet161,
 }
